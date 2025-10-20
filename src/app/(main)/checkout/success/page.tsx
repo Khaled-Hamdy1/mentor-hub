@@ -1,30 +1,30 @@
-'use client'
+"use client";
 
-import { createMentoringSession } from '@/services/mentoring-session'
-import type { MentoringSession } from '@prisma/client'
-import { CheckCircle } from 'lucide-react'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
-import { toast } from 'sonner'
+import type { MentoringSession } from "@prisma/client";
+import { CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { toast } from "sonner";
+import { createMentoringSession } from "@/services/mentoring-session";
 
-const CheckoutSuccess = () => {
-  const searchParams = useSearchParams()
+const CheckoutSuccessContent = () => {
+  const searchParams = useSearchParams();
   const sessionData = Object.fromEntries(
-    searchParams.entries(),
-  ) as unknown as MentoringSession
+    searchParams.entries()
+  ) as unknown as MentoringSession;
 
   useEffect(() => {
     try {
       createMentoringSession({
         ...sessionData,
         duration: Number(sessionData.duration),
-      })
-      toast.success('Mentoring session created')
+      });
+      toast.success("Mentoring session created");
     } catch (error) {
-      toast.error('Something went wrong, please try again')
+      toast.error("Something went wrong, please try again");
     }
-  }, [])
+  }, []);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center bg-gray-50">
@@ -53,7 +53,15 @@ const CheckoutSuccess = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CheckoutSuccess
+const CheckoutSuccess = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutSuccessContent />
+    </Suspense>
+  );
+};
+
+export default CheckoutSuccess;
