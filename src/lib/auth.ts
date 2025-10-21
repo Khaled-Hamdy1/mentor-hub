@@ -1,10 +1,10 @@
-import prisma from "@/db/prisma";
-import { emailTemplates } from "@/email-temps";
-import { sendEmail } from "@/lib/send-email";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { admin, openAPI } from "better-auth/plugins";
+import prisma from "@/db/prisma";
+import { emailTemplates } from "@/email-temps";
+import { sendEmail } from "@/lib/send-email";
 
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required");
@@ -97,5 +97,5 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   plugins: [openAPI(), admin(), nextCookies()],
-  trustedOrigins: ["http://localhost:3000", "http://localhost:*"],
+  trustedOrigins: ["http://localhost:*", "https://mentor-hub-nine.vercel.app/"],
 });
