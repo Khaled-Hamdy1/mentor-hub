@@ -12,7 +12,7 @@
     "db:migrate": "bun prisma migrate dev --name init",
     "auth:gen": "bunx @better-auth/cli generate --config ./src/lib/auth.ts --y",
     "db:studio": "bun prisma studio",
-    "postinstall": "bun prisma generate"
+    "postinstall": "bun x prisma generate"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.19",
