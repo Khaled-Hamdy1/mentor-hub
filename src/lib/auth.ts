@@ -97,5 +97,5 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   plugins: [openAPI(), admin(), nextCookies()],
-  trustedOrigins: ["http://localhost:*", "https://mentor-hub-nine.vercel.app/"],
+  trustedOrigins: ["http://localhost:*", "https://mentor-hub-nine.vercel.app/*"],
 });
