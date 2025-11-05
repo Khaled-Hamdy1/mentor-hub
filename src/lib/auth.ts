@@ -2,32 +2,39 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { admin, openAPI } from "better-auth/plugins";
+import { redirect } from "next/navigation";
 import prisma from "@/db/prisma";
 import { emailTemplates } from "@/email-temps";
 import { sendEmail } from "@/lib/send-email";
+import { sendVerificationEmail } from "./auth-handler";
 
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required");
-}
+switch (true) {
+  case !process.env.BASE_URL:
+    throw new Error("BASE_URL is required");
 
-if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
-  throw new Error("GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET are required");
-}
+  case !process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET:
+    throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required");
 
-if (!process.env.LINKEDIN_CLIENT_ID || !process.env.LINKEDIN_CLIENT_SECRET) {
-  throw new Error("LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET are required");
+  case !process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET:
+    throw new Error("GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET are required");
+
+  case !process.env.LINKEDIN_CLIENT_ID || !process.env.LINKEDIN_CLIENT_SECRET:
+    throw new Error(
+      "LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET are required",
+    );
+
+  default:
+    break;
 }
 
 export const auth = betterAuth({
+  appName: "Mentor Hub",
+  baseURL: process.env.BASE_URL,
   user: {
     additionalFields: {
-      dateOfBirth: {
-        type: "date",
-        required: true,
-      },
-      phone: {
-        type: "string",
-        required: true,
+      profileComplete: {
+        type: "boolean",
+        defaultValue: false,
       },
       streamRegistered: {
         type: "boolean",
@@ -37,33 +44,13 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
-    sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail(
-        emailTemplates.emailVerification({
-          to: user.email,
-          code: url,
-        }),
-      );
-    },
-    onEmailVerification: async (user) => {
-      await prisma.profile.create({
-        data: {
-          userId: user.id,
-          name: user.name || "Unnamed User",
-          email: user.email,
-          // @ts-expect-error - dateOfBirth is not defined in user type
-          phone: user.phone || "",
-          // @ts-expect-error - dateOfBirth is not defined in user type
-          dateOfBirth: user.dateOfBirth || new Date(),
-          imgUrl: null,
-          location: null,
-          jobTitle: null,
-          about: null,
-          skills: null,
-        },
-      });
-    },
+    sendVerificationEmail: async ({ user, url }) =>
+      sendVerificationEmail(user.email, url),
     sendOnSignUp: true,
+    expiresIn: 3600, // 1 hour
+    onEmailVerification: async (user) => {
+      redirect(`/auth/create-profile/${user.id}`);
+    },
     autoSignInAfterVerification: true,
   },
   emailAndPassword: {
@@ -97,5 +84,5 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   plugins: [openAPI(), admin(), nextCookies()],
-  trustedOrigins: ["http://localhost:*", "https://mentor-hub-nine.vercel.app/*"],
+  trustedOrigins: [`${process.env.BASE_URL}*`],
 });

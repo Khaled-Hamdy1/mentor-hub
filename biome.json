@@ -20,8 +20,12 @@
       "recommended": true,
       "suspicious": {
         "noUnknownAtRules": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
       }
     },
+
     "domains": {
       "next": "recommended",
       "react": "recommended"

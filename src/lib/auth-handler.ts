@@ -1,56 +1,67 @@
-'use server'
+"use server";
 
-import { Login, Register } from '@/schema/auth'
-import { redirect } from 'next/navigation'
-import { auth } from './auth'
+import { redirect } from "next/navigation";
+import { emailTemplates } from "@/email-temps";
+import type { Login, Register } from "@/schema/auth";
+import { auth } from "./auth";
+import { sendEmail } from "./send-email";
 
 export const signUpEmail = async (data: Register) => {
-  const { firstName, lastName, ...rest } = data
+  const { firstName, lastName, ...rest } = data;
   auth.api.signUpEmail({
     body: {
       ...rest,
       name: `${firstName} ${lastName}`,
     },
-  })
-}
+  });
+};
 
 export const signInEmail = async (data: Login) => {
-  auth.api.signInEmail({ body: data })
-}
+  auth.api.signInEmail({ body: data });
+};
 
 export const signOut = async () => {
-  auth.api.signOut({ headers: {} })
-}
+  auth.api.signOut({ headers: {} });
+};
 
-const signInSocial = async (provider: 'google' | 'linkedin' | 'github') => {
+const signInSocial = async (provider: "google" | "linkedin" | "github") => {
   const { url } = await auth.api.signInSocial({
     body: { callbackURL: `${process.env.BASE_URL}/profile`, provider },
-  })
+  });
   if (!url) {
-    throw new Error('No URL returned from signInSocial')
+    throw new Error("No URL returned from signInSocial");
   }
-  redirect(url)
-}
+  redirect(url);
+};
 
 export const signInGoogle = async () => {
-  await signInSocial('google')
-}
+  await signInSocial("google");
+};
 
 export const signInGithub = async () => {
-  await signInSocial('github')
-}
+  await signInSocial("github");
+};
 
 export const signInLinkedIn = async () => {
-  await signInSocial('linkedin')
-}
+  await signInSocial("linkedin");
+};
 
 export const signInFn = async (data: Login) => {
   try {
     await auth.api.signInEmail({
       body: data,
-    })
+    });
   } catch (error) {
-    console.log('error', error)
+    console.log("error", error);
   }
-  redirect('/profile/me')
-}
+  redirect("/profile/me");
+};
+
+export const sendVerificationEmail = async (email: string, url: string) => {
+  await sendEmail(
+    emailTemplates.emailVerification({
+      to: email,
+      code: url,
+    }),
+  );
+};

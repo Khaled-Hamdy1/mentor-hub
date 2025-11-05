@@ -4,7 +4,7 @@ import type { MentoringSession } from "@prisma/client";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useEffectEvent } from "react";
 import { toast } from "sonner";
 import { createMentoringSession } from "@/services/mentoring-session";
 
@@ -14,7 +14,7 @@ const CheckoutSuccessContent = () => {
     searchParams.entries()
   ) as unknown as MentoringSession;
 
-  useEffect(() => {
+  const createSession = useEffectEvent(() => {
     try {
       createMentoringSession({
         ...sessionData,
@@ -22,9 +22,11 @@ const CheckoutSuccessContent = () => {
       });
       toast.success("Mentoring session created");
     } catch (error) {
-      toast.error("Something went wrong, please try again");
+      toast.error(`Failed to create mentoring session: ${error}`);
     }
-  }, []);
+  });
+
+  useEffect(createSession, []);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center bg-gray-50">
