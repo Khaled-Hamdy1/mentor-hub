@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -38,7 +37,7 @@ model User {
   learningSessions      MentoringSession[] @relation("MenteeSessions")
   menteeReviews         Review[]           @relation("MenteeReviews")
   mentorReviews         Review[]           @relation("MentorReviews")
-  socialLinks           SocialLinks?
+  socialLinks           SocialLinks[]
 
   role String?
 
@@ -141,11 +140,12 @@ model Review {
 }
 
 model SocialLinks {
-  id     String  @id @default(uuid())
-  userId String  @unique
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name   String?
-  url    String?
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform String // "LinkedIn" | "GitHub" | "Twitter"
+  url      String
 
+  @@unique([userId, platform])
   @@map("profile_social_links")
 }
