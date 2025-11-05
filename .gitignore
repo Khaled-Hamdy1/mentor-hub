@@ -42,3 +42,5 @@ next-env.d.ts
 
 // local scripts
 prisma/seed.ts
+prisma/fake-data.ts
+prisma/test-schema.txt

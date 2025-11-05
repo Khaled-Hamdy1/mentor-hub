@@ -41,6 +41,47 @@ export const auth = betterAuth({
         defaultValue: false,
         required: false,
       },
+      gender: {
+        type: "string",
+        required: false,
+      },
+      phone: {
+        type: "string",
+        required: false,
+      },
+      location: {
+        type: "string",
+        required: false,
+      },
+      jobTitle: {
+        type: "string",
+        required: false,
+      },
+      dateOfBirth: {
+        type: "date",
+        required: false,
+      },
+      about: {
+        type: "string",
+        required: false,
+      },
+      skills: {
+        type: "string",
+        required: false,
+      },
+      availableForMentoring: {
+        type: "boolean",
+        defaultValue: false,
+        required: false,
+      },
+      mentoringRate: {
+        type: "number",
+        defaultValue: 0,
+      },
+      hourlyRate: {
+        type: "number",
+        defaultValue: 0,
+      },
     },
   },
   emailVerification: {

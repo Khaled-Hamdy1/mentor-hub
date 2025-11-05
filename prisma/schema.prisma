@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -9,57 +10,48 @@ datasource db {
 }
 
 model User {
-  id                    String             @id @default(uuid())
+  id                    String             @id
   name                  String
   email                 String
-  emailVerified         Boolean
+  emailVerified         Boolean            @default(false)
   image                 String?
   createdAt             DateTime           @default(now())
-  updatedAt             DateTime           @updatedAt
-  role                  String?
-  banned                Boolean?
+  updatedAt             DateTime           @default(now()) @updatedAt
+  banned                Boolean?           @default(false)
   banReason             String?
   banExpires            DateTime?
+  profileComplete       Boolean?           @default(false)
+  streamRegistered      Boolean?           @default(false)
+  sessions              Session[]
+  accounts              Account[]
   gender                String?
-  imgUrl                String?
-  phone                 String
+  phone                 String?
   location              String?
   jobTitle              String?
-  dateOfBirth           DateTime
+  dateOfBirth           DateTime?
   about                 String?            @db.Text
   skills                String?
   availableForMentoring Boolean?           @default(false)
+  mentoringRate         Float?             @default(0)
+  hourlyRate            Float?             @default(0)
   mentoringSessions     MentoringSession[] @relation("MentorSessions")
   learningSessions      MentoringSession[] @relation("MenteeSessions")
   menteeReviews         Review[]           @relation("MenteeReviews")
   mentorReviews         Review[]           @relation("MentorReviews")
   socialLinks           SocialLinks?
-  sessions              Session[]
-  accounts              Account[]
-  streamRegistered      Boolean?           @default(false)
+
+  role String?
 
   @@unique([email])
   @@map("user")
 }
 
-// Social Links Model
-
-model SocialLinks {
-  id     String  @id @default(uuid())
-  userId String  @unique
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name   String?
-  url    String?
-
-  @@map("profile_social_links")
-}
-
 model Session {
-  id             String   @id @default(uuid())
+  id             String   @id
   expiresAt      DateTime
   token          String
-  createdAt      DateTime
-  updatedAt      DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   ipAddress      String?
   userAgent      String?
   userId         String
@@ -71,7 +63,7 @@ model Session {
 }
 
 model Account {
-  id                    String    @id @default(uuid())
+  id                    String    @id
   accountId             String
   providerId            String
   userId                String
@@ -83,10 +75,21 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime
-  updatedAt             DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
 }
 
 enum SessionStatus {
@@ -101,7 +104,7 @@ model MentoringSession {
   id          String        @id @default(uuid())
   name        String
   description String?
-  price       String?
+  price       Float?
   thumbnail   String?       @db.Text
   date        DateTime
   duration    Int
@@ -137,13 +140,12 @@ model Review {
   @@map("review")
 }
 
-model Verification {
-  id         String   @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
+model SocialLinks {
+  id     String  @id @default(uuid())
+  userId String  @unique
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name   String?
+  url    String?
 
-  @@map("verification")
+  @@map("profile_social_links")
 }
