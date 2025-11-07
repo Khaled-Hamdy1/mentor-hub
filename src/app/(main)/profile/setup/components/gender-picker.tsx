@@ -4,9 +4,9 @@ import {
   type UseFormSetValue,
   useFormContext,
 } from "react-hook-form";
+import type { CreateProfileForm } from "@/app/api/user/schema";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { CreateProfileForm } from "../../../api/profile/schema";
 
 type Props = {
   setValue: UseFormSetValue<CreateProfileForm>;

@@ -3,8 +3,8 @@
 import { Upload, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import type { CreateProfileForm } from "@/app/api/user/schema";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { CreateProfileForm } from "../../../api/profile/schema";
 
 export default function AvatarUpload() {
   const { setValue, watch } = useFormContext<CreateProfileForm>();

@@ -8,38 +8,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  NULL
+}
+
 model User {
-  id                    String             @id
+  id                    String        @id
   name                  String
   email                 String
-  emailVerified         Boolean            @default(false)
+  emailVerified         Boolean       @default(false)
   image                 String?
-  createdAt             DateTime           @default(now())
-  updatedAt             DateTime           @default(now()) @updatedAt
-  banned                Boolean?           @default(false)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @default(now()) @updatedAt
+  banned                Boolean?      @default(false)
   banReason             String?
   banExpires            DateTime?
-  profileComplete       Boolean?           @default(false)
-  streamRegistered      Boolean?           @default(false)
+  profileComplete       Boolean?      @default(false)
+  streamRegistered      Boolean?      @default(false)
   sessions              Session[]
   accounts              Account[]
-  gender                String?
+  gender                Gender?
   phone                 String?
   location              String?
   jobTitle              String?
   dateOfBirth           DateTime?
-  about                 String?            @db.Text
+  about                 String?       @db.Text
   skills                String?
-  availableForMentoring Boolean?           @default(false)
-  mentoringRate         Float?             @default(0)
-  hourlyRate            Float?             @default(0)
-  mentoringSessions     MentoringSession[] @relation("MentorSessions")
-  learningSessions      MentoringSession[] @relation("MenteeSessions")
-  menteeReviews         Review[]           @relation("MenteeReviews")
-  mentorReviews         Review[]           @relation("MentorReviews")
+  availableForMentoring Boolean?      @default(false)
+  mentoringRate         Float?        @default(0)
+  hourlyRate            Float?        @default(0)
   socialLinks           SocialLinks[]
+  role                  String?
 
-  role String?
+  mentoringSessions MentoringSession[] @relation("MentorSessions")
+  learningSessions  MentoringSession[] @relation("MenteeSessions")
+  menteeReviews     Review[]           @relation("MenteeReviews")
+  mentorReviews     Review[]           @relation("MentorReviews")
 
   @@unique([email])
   @@map("user")
@@ -140,12 +146,20 @@ model Review {
 }
 
 model SocialLinks {
-  id       String @id @default(uuid())
-  userId   String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  platform String // "LinkedIn" | "GitHub" | "Twitter"
-  url      String
+  id        String  @id @default(uuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  facebook  String?
+  instagram String?
+  telegram  String?
+  whatsapp  String?
+  x         String?
+  linkedin  String?
+  github    String?
+  behance   String?
+  dribbble  String?
+  youtube   String?
+  pinterest String?
 
-  @@unique([userId, platform])
   @@map("profile_social_links")
 }

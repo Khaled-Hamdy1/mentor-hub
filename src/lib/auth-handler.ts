@@ -1,23 +1,27 @@
 "use server";
 
+import type { User } from "@prisma/client";
+import { unknown } from "better-auth";
 import { redirect } from "next/navigation";
+import type { Login } from "@/app/auth/login/schema";
+import type { Register } from "@/app/auth/register/schema";
 import { emailTemplates } from "@/email-temps";
-import type { Login, Register } from "@/schema/auth";
 import { auth } from "./auth";
 import { sendEmail } from "./send-email";
 
 export const signUpEmail = async (data: Register) => {
-  const { firstName, lastName, ...rest } = data;
   auth.api.signUpEmail({
     body: {
-      ...rest,
-      name: `${firstName} ${lastName}`,
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      phone: data.phone,
     },
   });
 };
 
 export const signInEmail = async (data: Login) => {
-  auth.api.signInEmail({ body: data });
+  auth.api.signInEmail({ body: { ...data } });
 };
 
 export const signOut = async () => {
@@ -48,13 +52,19 @@ export const signInLinkedIn = async () => {
 
 export const signInFn = async (data: Login) => {
   try {
-    await auth.api.signInEmail({
+    const response = (await auth.api.signInEmail({
       body: data,
-    });
+    })) as unknown as {
+      redirect: boolean;
+      token: string;
+      url: string | undefined;
+      user: User;
+    };
+    if (response?.user.profileComplete) redirect("/profile/me");
+    else redirect("/profile/setup");
   } catch (error) {
     console.log("error", error);
   }
-  redirect("/profile/me");
 };
 
 export const sendVerificationEmail = async (email: string, url: string) => {

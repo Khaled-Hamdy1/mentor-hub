@@ -1,8 +1,8 @@
-import Title from '@/components/ui/title'
+import Title from "@/components/ui/title";
 
 type AboutMeProps = {
-  bio: string
-}
+  bio: string;
+};
 
 export default function AboutMe({ bio }: AboutMeProps) {
   return (
@@ -12,5 +12,5 @@ export default function AboutMe({ bio }: AboutMeProps) {
         <p className="text-white text-sm sm:text-base leading-relaxed">{bio}</p>
       </div>
     </section>
-  )
+  );
 }

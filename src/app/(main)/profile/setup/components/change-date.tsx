@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import type { CreateProfileForm } from "@/app/api/user/schema";
 import { Label } from "@/components/ui/label";
-import type { CreateProfileForm } from "../../../api/profile/schema";
 
 export default function ChangeDate() {
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);

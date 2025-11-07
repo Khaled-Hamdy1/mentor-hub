@@ -1,17 +1,17 @@
-import { FACECARDE } from '@/constants/images'
-import Image from 'next/image'
+import Image from "next/image";
+import { FACECARDE } from "@/constants/images";
 
 type ReviewCardProps = {
   review: {
-    id: string
-    text: string
-    rating: number
+    id: string;
+    text: string;
+    rating: number;
     reviewer: {
-      name: string
-      image?: string | null
-    }
-  }
-}
+      name: string;
+      image?: string | null;
+    };
+  };
+};
 
 export default function ReviewCard({ review }: ReviewCardProps) {
   return (
@@ -30,7 +30,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
           </h3>
           <div className="flex items-center gap-1">
             <span className="text-yellow-400 text-sm">
-              {'★'.repeat(Math.floor(review.rating))}
+              {"★".repeat(Math.floor(review.rating))}
             </span>
             <span className="text-gray-600 text-sm">{review.rating}</span>
           </div>
@@ -40,5 +40,5 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         {review.text}
       </p>
     </div>
-  )
+  );
 }

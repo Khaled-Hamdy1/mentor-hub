@@ -1,35 +1,35 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useCreateChat } from '@/hooks/streamIO/useCreateChat'
-import { getProfileByUserEmail } from '@/services/profile'
-import { useRequest } from 'ahooks'
-import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
-import { ChannelList } from 'stream-chat-react'
+import { useRequest } from "ahooks";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { ChannelList } from "stream-chat-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useCreateChat } from "@/hooks/streamIO/useCreateChat";
+import { getProfileByUserEmail } from "@/services/user";
 
 const ChatSidebar = () => {
-  const [targetEmail, setTargetEmail] = useState<string>('')
+  const [targetEmail, setTargetEmail] = useState<string>("");
   const { loading: getProfileLoading, runAsync: getProfile } = useRequest(
     getProfileByUserEmail,
     {
       manual: true,
-    },
-  )
+    }
+  );
 
-  const channelHook = useCreateChat()
+  const channelHook = useCreateChat();
 
-  if (!channelHook) return <div>Channel creation unavailable</div>
+  if (!channelHook) return <div>Channel creation unavailable</div>;
 
-  const { createChannel, isLoading: channelCreateLoading } = channelHook
+  const { createChannel, isLoading: channelCreateLoading } = channelHook;
 
   const handleAddChat = async () => {
-    if (!targetEmail) return
-    const res = await getProfile(targetEmail)
-    if (!res) return
-    createChannel({ memberProfiles: [res] })
-  }
+    if (!targetEmail) return;
+    const res = await getProfile(targetEmail);
+    if (!res) return;
+    createChannel({ memberProfiles: [res] });
+  };
 
   return (
     <div className="mb-24">
@@ -37,7 +37,7 @@ const ChatSidebar = () => {
       <Input
         type="text"
         value={targetEmail}
-        onChange={e => setTargetEmail(e.target.value)}
+        onChange={(e) => setTargetEmail(e.target.value)}
         placeholder="Enter email"
         className="h-11"
       />
@@ -45,18 +45,19 @@ const ChatSidebar = () => {
         onClick={handleAddChat}
         disabled={channelCreateLoading || getProfileLoading}
         className="w-full mt-2 h-11"
-        variant="default">
+        variant="default"
+      >
         {channelCreateLoading || getProfileLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Loading
           </>
         ) : (
-          'Add Chat'
+          "Add Chat"
         )}
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default ChatSidebar
+export default ChatSidebar;

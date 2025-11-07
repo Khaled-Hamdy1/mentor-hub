@@ -6,24 +6,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import PickDate from "@/components/shared/pick-date";
 import InputText from "@/components/shared/text-input";
 import { Button } from "@/components/ui/button";
 import Title from "@/components/ui/title";
 import { GITHUB, LINKEDIN } from "@/constants/icons";
 import { GOOGLE, LOGIN } from "@/constants/images";
 import * as authHandler from "@/lib/auth-handler";
-import { RegisterSchema, type Register as TRegister } from "@/schema/auth";
+import { RegisterSchema, type Register as TRegister } from "./schema";
 
 export default function Register() {
   const router = useRouter();
-  const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date());
   const [isAgreed, setIsAgreed] = useState(false);
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<TRegister>({
     resolver: zodResolver(RegisterSchema),
@@ -38,12 +35,6 @@ export default function Register() {
       console.error("Registration error:", error);
       // Handle error here (you could add toast notifications)
     }
-  };
-
-  const onChangeBirthDate = (date: Date | undefined) => {
-    if (!date) return;
-    setValue("dateOfBirth", date || new Date());
-    setDateOfBirth(date);
   };
 
   return (
@@ -71,6 +62,15 @@ export default function Register() {
                 error={errors.email?.message}
               />
               <InputText
+                label="Name"
+                placeholder="Enter Your Name"
+                type="text"
+                name="name"
+                register={register}
+                classNames={{ label: "text-black mb-2" }}
+                error={errors.name?.message}
+              />
+              <InputText
                 label="Phone"
                 placeholder="E.G. 011 123 11 441"
                 type="text"
@@ -78,24 +78,6 @@ export default function Register() {
                 register={register}
                 classNames={{ label: "text-black mb-2" }}
                 error={errors.phone?.message}
-              />
-              <InputText
-                label="First Name"
-                placeholder="Enter Your First Name"
-                type="text"
-                name="firstName"
-                register={register}
-                classNames={{ label: "text-black mb-2" }}
-                error={errors.firstName?.message}
-              />
-              <InputText
-                label="Last Name"
-                placeholder="Enter Your Last Name"
-                type="text"
-                name="lastName"
-                register={register}
-                classNames={{ label: "text-black mb-2" }}
-                error={errors.lastName?.message}
               />
               <InputText
                 label="Password"
@@ -120,16 +102,6 @@ export default function Register() {
                   button: "h-fit translate-y-1/2 pt-[2px]",
                 }}
                 error={errors.repeatPassword?.message}
-              />
-              <PickDate
-                value={dateOfBirth.toDateString()}
-                label="Date Of Birth"
-                onChangeDate={onChangeBirthDate}
-                classNames={{
-                  label: "text-black mb-2",
-                  container: "col-span-2",
-                }}
-                error={errors.dateOfBirth?.message}
               />
             </div>
             <div className="flex items-center mt-4">

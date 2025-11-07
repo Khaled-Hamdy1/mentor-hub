@@ -1,14 +1,19 @@
-import { MAIL, MAP, MENU, PHONE } from '@/constants/icons'
-import Image from 'next/image'
+import Image from "next/image";
+import { MAIL, MAP, MENU, PHONE } from "@/constants/icons";
 
 type ContactInfoProps = {
-  phone: string
-  email: string
-  address: string
-  dateOfBirth: string
-}
+  phone: string;
+  email: string;
+  address: string;
+  dateOfBirth: string;
+};
 
-export default function ContactInfo({ phone, email, address, dateOfBirth }: ContactInfoProps) {
+export default function ContactInfo({
+  phone,
+  email,
+  address,
+  dateOfBirth,
+}: ContactInfoProps) {
   return (
     <div className="w-full">
       <h3 className="text-darkblue font-bold text-lg">About</h3>
@@ -35,5 +40,5 @@ export default function ContactInfo({ phone, email, address, dateOfBirth }: Cont
         </p>
       </div>
     </div>
-  )
+  );
 }

@@ -1,25 +1,25 @@
-'use server'
+"use server";
 
-import prisma from '@/db/prisma'
-import { auth } from '@/lib/auth'
-import { SessionStatus } from '@prisma/client'
-import { headers } from 'next/headers'
-import { getProfile } from './profile'
+import { SessionStatus } from "@prisma/client";
+import { headers } from "next/headers";
+import prisma from "@/db/prisma";
+import { auth } from "@/lib/auth";
+import { getProfile } from "./user";
 
 export async function createMentoringSession(data: {
-  mentorId: string
-  menteeId: string
-  name: string
-  description?: string | null
-  price?: string | null
-  thumbnail?: string | null
-  date: Date
-  duration: number
-  notes?: string | null
+  mentorId: string;
+  menteeId: string;
+  name: string;
+  description?: string | null;
+  price?: string | null;
+  thumbnail?: string | null;
+  date: Date;
+  duration: number;
+  notes?: string | null;
 }) {
-  const session = await auth.api.getSession({ headers: await headers() })
+  const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user?.id) {
-    throw new Error('Unauthorized')
+    throw new Error("Unauthorized");
   }
 
   return await prisma.mentoringSession.create({
@@ -45,14 +45,14 @@ export async function createMentoringSession(data: {
         },
       },
     },
-  })
+  });
 }
 
 export async function getMyMentorships() {
-  const profile = await getProfile()
+  const profile = await getProfile();
 
   if (!profile) {
-    throw new Error('Unauthorized')
+    throw new Error("Unauthorized");
   }
 
   return prisma.mentoringSession.findMany({
@@ -70,16 +70,16 @@ export async function getMyMentorships() {
       },
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
-  })
+  });
 }
 
 export async function getMyLearnings() {
-  const profile = await getProfile()
+  const profile = await getProfile();
 
   if (!profile) {
-    throw new Error('Unauthorized')
+    throw new Error("Unauthorized");
   }
 
   return prisma.mentoringSession.findMany({
@@ -97,16 +97,16 @@ export async function getMyLearnings() {
       },
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
-  })
+  });
 }
 
 export async function updateSessionStatus(
   sessionId: string,
   status: SessionStatus,
 ) {
-  const profile = await getProfile()
+  const profile = await getProfile();
 
   // Verify the user is the mentor for this session
   const mentoringSession = await prisma.mentoringSession.findFirst({
@@ -114,10 +114,10 @@ export async function updateSessionStatus(
       id: sessionId,
       mentorId: profile?.id,
     },
-  })
+  });
 
   if (!mentoringSession) {
-    throw new Error('Session not found or unauthorized')
+    throw new Error("Session not found or unauthorized");
   }
 
   return await prisma.mentoringSession.update({
@@ -141,7 +141,7 @@ export async function updateSessionStatus(
         },
       },
     },
-  })
+  });
 }
 
 setInterval(async () => {
@@ -149,18 +149,18 @@ setInterval(async () => {
     where: {
       status: SessionStatus.UPCOMING,
     },
-  })
+  });
 
   for (const session of sessions) {
-    const now = new Date()
+    const now = new Date();
     const endDate = new Date(
       session.date.getTime() + session.duration * 60 * 1000,
-    )
+    );
     if (now >= endDate) {
       await prisma.mentoringSession.update({
         where: { id: session.id },
         data: { status: SessionStatus.COMPLETED },
-      })
+      });
     }
   }
-}, 1000)
+}, 1000);

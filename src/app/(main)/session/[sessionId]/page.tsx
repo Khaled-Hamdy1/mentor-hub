@@ -1,66 +1,66 @@
-'use client'
+"use client";
 
-import { ReviewModal } from '@/app/(main)/session/[sessionId]/ReviewModal'
-import { useJoinCall } from '@/hooks/streamIO/useJoinCall'
-import { useGetProfile } from '@/hooks/useGetProfile'
-import type { MentoringSession } from '@prisma/client'
+import type { MentoringSession } from "@prisma/client";
 import {
   CallControls,
   SpeakerLayout,
   StreamCall,
   StreamTheme,
   StreamVideo,
-} from '@stream-io/video-react-sdk'
-import { redirect, useParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+} from "@stream-io/video-react-sdk";
+import { redirect, useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { ReviewModal } from "@/app/(main)/session/[sessionId]/ReviewModal";
+import { useJoinCall } from "@/hooks/streamIO/useJoinCall";
+import { useGetProfile } from "@/hooks/useGetUser";
 
 export default function Session() {
-  const { sessionId } = useParams()
-  const { profile } = useGetProfile()
-  const ref = useRef(false)
-  const [session, setSession] = useState<MentoringSession>()
-  const [sessionLoading, setSessionLoading] = useState(true)
-  const { call, videoClient, isLoading } = useJoinCall()
+  const { sessionId } = useParams();
+  const { profile } = useGetProfile();
+  const ref = useRef(false);
+  const [session, setSession] = useState<MentoringSession>();
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const { call, videoClient, isLoading } = useJoinCall();
 
   useEffect(() => {
     try {
       const fetchSession = async () => {
-        setSessionLoading(true)
+        setSessionLoading(true);
         const session = await fetch(
-          `/api/mentoring-sessions/${sessionId}`,
-        ).then(res => res.json())
+          `/api/mentoring-sessions/${sessionId}`
+        ).then((res) => res.json());
 
-        setSession(session)
-        setSessionLoading(false)
-      }
-      fetchSession()
+        setSession(session);
+        setSessionLoading(false);
+      };
+      fetchSession();
     } catch (error) {
-      console.error('Error fetching session:', error)
+      console.error("Error fetching session:", error);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const joinCall = async () => {
       if (!ref.current && call) {
-        await call.join({ create: true })
-        ref.current = true
+        await call.join({ create: true });
+        ref.current = true;
       }
-    }
-    joinCall()
-  }, [call])
+    };
+    joinCall();
+  }, [call]);
 
-  const [showReview, setShowReview] = useState(false)
+  const [showReview, setShowReview] = useState(false);
   if (isLoading || !call || !videoClient || sessionLoading || !session) {
-    return <p>Loading...</p>
+    return <p>Loading...</p>;
   }
 
   const handleLeave = () => {
-    call?.leave()
+    call?.leave();
     if (profile?.id == session?.mentorId) {
-      redirect('/')
+      redirect("/");
     }
-    setShowReview(true)
-  }
+    setShowReview(true);
+  };
 
   return (
     <>
@@ -78,5 +78,5 @@ export default function Session() {
         session={session}
       />
     </>
-  )
+  );
 }

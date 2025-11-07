@@ -1,13 +1,8 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useCreateChat } from '@/hooks/streamIO/useCreateChat'
-import { useStream } from '@/hooks/streamIO/useStream'
-import { getProfileByUserEmail } from '@/services/profile'
-import { useRequest } from 'ahooks'
-import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { useRequest } from "ahooks";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import {
   Channel,
   ChannelHeader,
@@ -17,38 +12,43 @@ import {
   MessageInput,
   MessageList,
   Window,
-} from 'stream-chat-react'
+} from "stream-chat-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useCreateChat } from "@/hooks/streamIO/useCreateChat";
+import { useStream } from "@/hooks/streamIO/useStream";
+import { getProfileByUserEmail } from "@/services/user";
 
-type Props = {}
+type Props = {};
 
 export default function Chats({}: Props) {
-  const stream = useStream()
+  const stream = useStream();
   const { loading: getProfileLoading, runAsync: getProfile } = useRequest(
     getProfileByUserEmail,
     {
       manual: true,
-    },
-  )
-  const [targetEmail, setTargetEmail] = useState<string>('')
-  const temp = useCreateChat()
-  const filters = { members: { $in: ['jimmy'] } }
-  const options = { limit: 10 }
+    }
+  );
+  const [targetEmail, setTargetEmail] = useState<string>("");
+  const temp = useCreateChat();
+  const filters = { members: { $in: ["jimmy"] } };
+  const options = { limit: 10 };
 
-  if (!temp) return <div>There is a problem in useCreateChat hook</div>
+  if (!temp) return <div>There is a problem in useCreateChat hook</div>;
 
-  const { createChannel, isLoading: channleCreateLoading } = temp
+  const { createChannel, isLoading: channleCreateLoading } = temp;
 
-  if (!stream) return <div>loading...</div>
-  const { homeState, profileError, profileLoading, client } = stream
+  if (!stream) return <div>loading...</div>;
+  const { homeState, profileError, profileLoading, client } = stream;
 
   if (profileLoading || !homeState) {
     return (
       <main className="flex justify-center w-full items-center h-[calc(100vh-95px)] bg-gray-100">
         <LoadingIndicator />
       </main>
-    )
+    );
   } else if (profileError) {
-    return <div>error</div>
+    return <div>error</div>;
   }
 
   if (!client) {
@@ -56,16 +56,16 @@ export default function Chats({}: Props) {
       <main className="flex justify-center w-full items-center h-screen bg-gray-100">
         <LoadingIndicator />
       </main>
-    )
+    );
   }
 
   const handleAddChat = async () => {
-    if (!targetEmail) return
-    const res = await getProfile(targetEmail)
-    if (!res) return
-    createChannel({ memberProfiles: [res] })
-    setTargetEmail('')
-  }
+    if (!targetEmail) return;
+    const res = await getProfile(targetEmail);
+    if (!res) return;
+    createChannel({ memberProfiles: [res] });
+    setTargetEmail("");
+  };
 
   return (
     <div className="container mx-auto">
@@ -80,7 +80,7 @@ export default function Chats({}: Props) {
             <Input
               type="text"
               value={targetEmail}
-              onChange={e => setTargetEmail(e.target.value)}
+              onChange={(e) => setTargetEmail(e.target.value)}
               placeholder="Enter email"
               className="h-11"
             />
@@ -88,14 +88,15 @@ export default function Chats({}: Props) {
               onClick={handleAddChat}
               disabled={channleCreateLoading || getProfileLoading}
               className="w-full mt-2 h-11"
-              variant="default">
+              variant="default"
+            >
               {channleCreateLoading || getProfileLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Loading
                 </>
               ) : (
-                'Add Chat'
+                "Add Chat"
               )}
             </Button>
           </div>
@@ -111,5 +112,5 @@ export default function Chats({}: Props) {
         </div>
       </Chat>
     </div>
-  )
+  );
 }

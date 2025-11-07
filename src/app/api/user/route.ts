@@ -4,7 +4,7 @@ import prisma from "@/db/prisma";
 import { auth } from "@/lib/auth";
 import { uploadImageToCloudinary } from "@/lib/cloudinary-config";
 import { getAuth } from "@/services/auth";
-import { formDataToObject, objectToFormData } from "@/utils/form-data-handler";
+import { formDataToObject } from "@/utils/form-data-handler";
 import type { CreateProfileForm } from "./schema";
 
 export async function GET() {
@@ -15,9 +15,9 @@ export async function GET() {
         status: 401,
       });
 
-    const profile = await prisma.profile.findUnique({
+    const profile = await prisma.user.findUnique({
       where: {
-        userId: user.id,
+        id: user.id,
       },
     });
 

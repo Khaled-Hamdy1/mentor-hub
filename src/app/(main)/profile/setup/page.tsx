@@ -3,11 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useEffectEvent } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { useSession } from "@/hooks/useSession";
 import {
   type CreateProfileForm,
   CreateProfileSchema,
-} from "../../api/profile/schema";
+} from "@/app/api/user/schema";
+import { useSession } from "@/hooks/useSession";
 import Form from "./components/form";
 import Skeleton from "./components/skeleton";
 import UserNotFound from "./components/user-not-found";
@@ -21,17 +21,22 @@ export default function CreateProfile() {
   console.log("Session data:", session);
   console.log("Session Error:", error);
 
-  const insertValues = useEffectEvent(() => {
+  // const insertValues = useEffectEvent(() => {
+  //   if (session?.user) {
+  //     methods.setValue("name", session?.user.name || "");
+  //     methods.setValue("avatarLink", session?.user.image || "");
+  //     methods.setValue("avatarFile", null);
+  //     methods.setValue("userId", session?.user?.id || "");
+  //   }
+  // });
+
+  useEffect(() => {
     if (session?.user) {
       methods.setValue("name", session?.user.name || "");
       methods.setValue("avatarLink", session?.user.image || "");
       methods.setValue("avatarFile", null);
       methods.setValue("userId", session?.user?.id || "");
     }
-  });
-
-  useEffect(() => {
-    insertValues();
   }, [session]);
 
   if (isLoading) {

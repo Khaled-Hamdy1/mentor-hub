@@ -1,4 +1,4 @@
-import { getAllProfiles } from "@/services/profile";
+import { getAllProfiles } from "@/services/user";
 
 export default async function Home() {
   const profiles = await getAllProfiles();

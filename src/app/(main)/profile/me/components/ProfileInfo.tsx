@@ -1,24 +1,24 @@
-import Image, { type StaticImageData } from 'next/image'
+import Image, { type StaticImageData } from "next/image";
 
-type ProfileInfoProps = {
-  name: string
-  title: string
-  id: string
-  rating: number
-  profileImage: string | StaticImageData
-}
+type UserInfoProps = {
+  name: string;
+  title: string;
+  id: string;
+  rating: number;
+  userImage: string | StaticImageData;
+};
 
 export default function ProfileInfo({
   name,
   title,
   id,
   rating,
-  profileImage,
-}: ProfileInfoProps) {
+  userImage,
+}: UserInfoProps) {
   return (
     <div className="text-center">
       <Image
-        src={profileImage}
+        src={userImage}
         alt={`${name}'s profile`}
         width={128}
         height={128}
@@ -30,8 +30,11 @@ export default function ProfileInfo({
       <div className="flex justify-center items-center mt-3">
         {[...Array(5)].map((_, i) => (
           <span
-            key={i}
-            className={`text-lg ${i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}`}>
+            key={crypto.randomUUID()}
+            className={`text-lg ${
+              i < Math.floor(rating) ? "text-yellow-400" : "text-gray-300"
+            }`}
+          >
             ★
           </span>
         ))}
@@ -40,5 +43,5 @@ export default function ProfileInfo({
         </span>
       </div>
     </div>
-  )
+  );
 }

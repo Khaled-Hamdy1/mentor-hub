@@ -1,17 +1,17 @@
-'use server'
+"use server";
 
-import { NextResponse } from 'next/server'
-import { getAllProfiles } from '@/services/profile'
+import { NextResponse } from "next/server";
+import { getAllProfiles } from "@/services/user";
 
 export async function GET() {
   try {
-    const profiles = await getAllProfiles()
-    return NextResponse.json(profiles)
+    const profiles = await getAllProfiles();
+    return NextResponse.json(profiles);
   } catch (error) {
-    console.error('Error fetching profiles:', error)
+    console.error("Error fetching profiles:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch profiles' },
-      { status: 500 }
-    )
+      { error: "Failed to fetch profiles" },
+      { status: 500 },
+    );
   }
 }

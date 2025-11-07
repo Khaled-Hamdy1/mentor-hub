@@ -2,10 +2,10 @@
 
 import { Briefcase } from "lucide-react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
+import type { CreateProfileForm as FormData } from "@/app/api/user/schema";
 import InputText from "@/components/shared/text-input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,6 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { LOGIN } from "@/constants/images";
 import { objectToFormData } from "@/utils/form-data-handler";
-import type { CreateProfileForm as FormData } from "../../../api/profile/schema";
 import AsidePanel from "./aside-panel";
 import AvatarUpload from "./avatar-upload";
 import ChangeDate from "./change-date";

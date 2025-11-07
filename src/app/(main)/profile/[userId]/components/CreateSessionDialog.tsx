@@ -1,6 +1,8 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
+import { redirect } from "next/navigation";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,19 +10,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { useGetProfile } from '@/hooks/useGetProfile'
-import { redirect } from 'next/navigation'
-import { useState } from 'react'
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useGetProfile } from "@/hooks/useGetUser";
 
 interface CreateSessionDialogProps {
-  isOpen: boolean
-  onClose: () => void
-  mentorId: string
-  mentorName: string
+  isOpen: boolean;
+  onClose: () => void;
+  mentorId: string;
+  mentorName: string;
 }
 
 export default function CreateSessionDialog({
@@ -29,52 +29,52 @@ export default function CreateSessionDialog({
   mentorId,
   mentorName,
 }: CreateSessionDialogProps) {
-  const { profile } = useGetProfile()
+  const { profile } = useGetProfile();
   const [sessionData, setSessionData] = useState({
-    name: '',
+    name: "",
     date: new Date(),
     duration: 60,
-    price: '',
-    description: '',
-    notes: '',
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null)
+    price: "",
+    description: "",
+    notes: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      setThumbnailFile(file)
-      const reader = new FileReader()
+      setThumbnailFile(file);
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setThumbnailPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setThumbnailPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     const appendData = {
       ...sessionData,
-      thumbnail: '',
+      thumbnail: "",
       mentorId,
       menteeId: profile?.id,
-    }
-    const checkoutUrl = await fetch('/api/payment', {
-      method: 'POST',
+    };
+    const checkoutUrl = await fetch("/api/payment", {
+      method: "POST",
       body: JSON.stringify(appendData),
-    }).then(res => res.json())
+    }).then((res) => res.json());
 
     if (!checkoutUrl) {
-      console.log(checkoutUrl)
-      setIsSubmitting(false)
-      return
+      console.log(checkoutUrl);
+      setIsSubmitting(false);
+      return;
     }
 
-    redirect(checkoutUrl)
-  }
+    redirect(checkoutUrl);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -108,7 +108,8 @@ export default function CreateSessionDialog({
                 type="button"
                 variant="secondary"
                 className="w-full"
-                onClick={() => document.getElementById('thumbnail')?.click()}>
+                onClick={() => document.getElementById("thumbnail")?.click()}
+              >
                 Click To Select File
               </Button>
               <input
@@ -127,7 +128,7 @@ export default function CreateSessionDialog({
             <Input
               id="sessionName"
               value={sessionData.name}
-              onChange={e =>
+              onChange={(e) =>
                 setSessionData({ ...sessionData, name: e.target.value })
               }
               placeholder="UI/UX Basics"
@@ -140,9 +141,9 @@ export default function CreateSessionDialog({
             <input
               className="focus-visible:border-ring border-input border w-full p-2"
               type="datetime-local"
-              onChange={e => {
-                const newDate = new Date(e.target.value)
-                setSessionData({ ...sessionData, date: newDate })
+              onChange={(e) => {
+                const newDate = new Date(e.target.value);
+                setSessionData({ ...sessionData, date: newDate });
               }}
             />
           </div>
@@ -156,9 +157,9 @@ export default function CreateSessionDialog({
                 type="number"
                 min={1}
                 placeholder="60"
-                onChange={e => {
-                  const minutes = parseInt(e.target.value) || 0
-                  setSessionData({ ...sessionData, duration: minutes })
+                onChange={(e) => {
+                  const minutes = parseInt(e.target.value) || 0;
+                  setSessionData({ ...sessionData, duration: minutes });
                 }}
               />
               <span className="ml-2">minutes</span>
@@ -172,7 +173,7 @@ export default function CreateSessionDialog({
               <Input
                 id="price"
                 value={sessionData.price}
-                onChange={e =>
+                onChange={(e) =>
                   setSessionData({ ...sessionData, price: e.target.value })
                 }
                 placeholder="00:00"
@@ -190,7 +191,7 @@ export default function CreateSessionDialog({
             <Textarea
               id="description"
               value={sessionData.description}
-              onChange={e =>
+              onChange={(e) =>
                 setSessionData({ ...sessionData, description: e.target.value })
               }
               placeholder="Enter session description"
@@ -204,7 +205,7 @@ export default function CreateSessionDialog({
             <Textarea
               id="notes"
               value={sessionData.notes}
-              onChange={e =>
+              onChange={(e) =>
                 setSessionData({ ...sessionData, notes: e.target.value })
               }
               placeholder="Enter session notes"
@@ -230,10 +231,10 @@ export default function CreateSessionDialog({
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? 'Submitting...' : 'Submit'}
+            {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

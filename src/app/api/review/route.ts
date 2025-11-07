@@ -1,10 +1,10 @@
-import prisma from '@/db/prisma'
-import { getProfile } from '@/services/profile'
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from "next/server";
+import prisma from "@/db/prisma";
+import { getProfile } from "@/services/user";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const body = await request.json();
     const session = await prisma.review.create({
       data: {
         description: body.description,
@@ -13,19 +13,19 @@ export async function POST(request: NextRequest) {
         mentorId: body.mentorId,
         menteeId: body.menteeId,
       },
-    })
-    return NextResponse.json(session)
+    });
+    return NextResponse.json(session);
   } catch (error) {
-    console.error('Error creating mentoring session:', error)
-    return NextResponse.json({ error: error }, { status: 500 })
+    console.error("Error creating mentoring session:", error);
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 
 export async function GET() {
-  const profile = await getProfile()
+  const profile = await getProfile();
 
   if (!profile) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -36,11 +36,11 @@ export async function GET() {
       include: {
         mentee: true,
       },
-    })
+    });
 
-    return NextResponse.json(sessions)
+    return NextResponse.json(sessions);
   } catch (error) {
-    console.error('Error getting mentoring sessions:', error)
-    return NextResponse.json({ error: error }, { status: 500 })
+    console.error("Error getting mentoring sessions:", error);
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }

@@ -1,47 +1,47 @@
-import { REFRESH, TICK, TICKA, TIMER } from '@/constants/icons'
-import prisma from '@/db/prisma'
-import Image from 'next/image'
+import Image from "next/image";
+import { REFRESH, TICK, TICKA, TIMER } from "@/constants/icons";
+import prisma from "@/db/prisma";
 
 type MentorshipStatsProps = {
-  profileId: string
-}
+  userId: string;
+};
 
 export enum SessionStatus {
-  PENDING = 'PENDING',
-  REJECTED = 'REJECTED',
-  COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED',
-  UPCOMING = 'UPCOMING',
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+  UPCOMING = "UPCOMING",
 }
 
 export default async function MentorshipStats({
-  profileId,
+  userId,
 }: MentorshipStatsProps) {
   const sessions = await prisma.mentoringSession.findMany({
     where: {
-      mentorId: profileId,
+      mentorId: userId,
     },
-  })
+  });
 
   const pending = sessions.filter(
-    session => session.status === SessionStatus.PENDING,
-  ).length
+    (session) => session.status === SessionStatus.PENDING
+  ).length;
 
   const rejected = sessions.filter(
-    session => session.status === SessionStatus.REJECTED,
-  ).length
+    (session) => session.status === SessionStatus.REJECTED
+  ).length;
 
   const completed = sessions.filter(
-    session => session.status === SessionStatus.COMPLETED,
-  ).length
+    (session) => session.status === SessionStatus.COMPLETED
+  ).length;
 
   const cancelled = sessions.filter(
-    session => session.status === SessionStatus.CANCELLED,
-  ).length
+    (session) => session.status === SessionStatus.CANCELLED
+  ).length;
 
   const upcoming = sessions.filter(
-    session => session.status === SessionStatus.UPCOMING,
-  ).length
+    (session) => session.status === SessionStatus.UPCOMING
+  ).length;
   return (
     <div className="w-full">
       <h3 className="text-darkblue font-bold text-lg">Mentorship Sessions</h3>
@@ -68,5 +68,5 @@ export default async function MentorshipStats({
         </p>
       </div>
     </div>
-  )
+  );
 }

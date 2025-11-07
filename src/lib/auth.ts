@@ -2,7 +2,6 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { admin, openAPI } from "better-auth/plugins";
-import { redirect } from "next/navigation";
 import prisma from "@/db/prisma";
 import { emailTemplates } from "@/email-temps";
 import { sendEmail } from "@/lib/send-email";
@@ -88,10 +87,7 @@ export const auth = betterAuth({
     sendVerificationEmail: async ({ user, url }) =>
       sendVerificationEmail(user.email, url),
     sendOnSignUp: true,
-    expiresIn: 3600, // 1 hour
-    onEmailVerification: async (user) => {
-      redirect(`/auth/create-profile/${user.id}`);
-    },
+    expiresIn: 3600, // 1 hour,
     autoSignInAfterVerification: true,
   },
   emailAndPassword: {
