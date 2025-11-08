@@ -54,5 +54,5 @@ The project uses **Prisma ORM** with a relational schema structured as follows:
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/mentor-hub.git
+git clone https://github.com/Khaled-Hamdy1/mentor-hub.git
 cd mentor-hub
