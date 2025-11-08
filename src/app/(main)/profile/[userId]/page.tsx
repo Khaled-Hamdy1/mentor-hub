@@ -1,4 +1,4 @@
-import { getProfile } from "@/services/user";
+import { getUser } from "@/services/user";
 import AboutMe from "./components/AboutMe";
 import ProfileSidebar from "./components/ProfileSidebar";
 import Reviews from "./components/Reviews";
@@ -11,7 +11,7 @@ interface PageProps {
 
 export default async function Profile({ params }: PageProps) {
   const { userId } = await params;
-  const profile = await getProfile(userId);
+  const profile = await getUser(userId);
 
   if (!profile) {
     return <div>Profile not found</div>;

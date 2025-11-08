@@ -30,7 +30,7 @@ export const signOut = async () => {
 
 const signInSocial = async (provider: "google" | "linkedin" | "github") => {
   const { url } = await auth.api.signInSocial({
-    body: { callbackURL: `${process.env.BASE_URL}/profile`, provider },
+    body: { callbackURL: `${process.env.BASE_URL}/profile/me`, provider },
   });
   if (!url) {
     throw new Error("No URL returned from signInSocial");
