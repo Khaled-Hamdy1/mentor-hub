@@ -17,7 +17,6 @@ The goal is to make mentoring simple, accessible, and fair for everyone — with
 
 - 🔐 **Authentication with Better Auth** (Email & OAuth)
 - 👤 **Profile creation and customization**
-- 🖼️ **Avatar upload** for user profiles
 - 🔎 **Search** for mentors by skill and rate
 - 📅 **Book and manage mentoring sessions**
 - 📝 **Review system** for feedback and ratings
